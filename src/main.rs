@@ -59,6 +59,7 @@ fn process(pair: Pair<Rule>, str: &mut String, translation: &HashMap<String, Str
         | Rule::tl_value
         | Rule::tl_singleline_value
         | Rule::tl_multiline_value
+        | Rule::tl_multiline_value_leading_newline
         | Rule::comment_contents => unreachable!(),
     }
 }
@@ -78,6 +79,11 @@ fn get_value(
         }
         Rule::tl_multiline_value => {
             str.push_str("[[");
+            str.push_str(value);
+            str.push_str("]]");
+        }
+        Rule::tl_multiline_value_leading_newline => {
+            str.push_str("[[\n");
             str.push_str(value);
             str.push_str("]]");
         }
