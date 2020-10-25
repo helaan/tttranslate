@@ -1,0 +1,15 @@
+tlfile = { SOI ~ ( comment | createlang | tlstr | newline )* ~ EOI }
+
+comment = { "--" ~ comment_contents* ~ NEWLINE }
+comment_contents = _{ !(NEWLINE) ~ ANY }
+
+createlang = { "local L = LANG.CreateLanguage(\"" ~ ASCII_ALPHA+ ~ "\")" ~ NEWLINE }
+
+// Explicit newline rule ensures line breaks are sent over
+newline = { NEWLINE }
+
+tlkey = { ( ASCII_ALPHANUMERIC | "_" )* }
+tl_value = _{ tl_singleline_value | tl_multiline_value }
+tl_singleline_value = { "\"" ~ (!("\"" | NEWLINE) ~ ANY)* ~ "\"" }
+tl_multiline_value = { "[[" ~ (!("]]") ~ ANY)* ~ "]]" }
+tlstr = { "L." ~ tlkey ~ " = " ~ tl_value ~ NEWLINE }
